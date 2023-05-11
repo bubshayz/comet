@@ -1,3 +1,3 @@
 ## Comet
 
-`comet = "bubshayz/comet@4.0.0"`
+`comet = "bubshayz/comet@4.1.0"`
