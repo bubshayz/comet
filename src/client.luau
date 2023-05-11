@@ -66,7 +66,7 @@ local function readyUpControllers()
 				return
 			end
 
-			for _, controller in stagedControllers do
+			for _, controller in controllersReady do
 				if typeof(controller.start) ~= "function" then
 					continue
 				end
@@ -101,9 +101,18 @@ function client.start()
 	return Promise.new(function(resolve)
 		local clockStampBeforeStart = os.clock()
 
-		retrieveServices():await()
+		local wasSuccessfull, response = retrieveServices():await()
+
+		if not wasSuccessfull then
+			warn(tostring(response))
+		end
+
 		local controllersInitializedPromise, startupServices = readyUpControllers()
-		controllersInitializedPromise:await()
+		local wasSuccessfull, response = controllersInitializedPromise:await()
+
+		if not wasSuccessfull then
+			warn(tostring(response))
+		end
 
 		startupServices()
 		script:SetAttribute(sharedEnums.Attribute.started, true)
@@ -148,6 +157,7 @@ end
 
 function client.controller(controllerName: string): Controller
 	local controller = controllersReady[controllerName]
+	assert(client.started(), `Can only get controllers after Comet has started.`)
 	assert(controller, `Controller "{controllerName}" was not found!`)
 
 	return controller

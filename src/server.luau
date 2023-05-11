@@ -101,7 +101,12 @@ function server.start()
 	return Promise.new(function(resolve)
 		local beforeStartClockStamp = os.clock()
 		local servicesInitializedPromise, startupServices = readyUpServices()
-		servicesInitializedPromise:expect()
+
+		local wasSuccessfull, response = servicesInitializedPromise:await()
+
+		if not wasSuccessfull then
+			warn(tostring(response))
+		end
 
 		startupServices()
 		script:SetAttribute(sharedEnums.Attribute.started, true)
@@ -146,6 +151,7 @@ end
 
 function server.service(serviceName: string): Service
 	local service = servicesReady[serviceName]
+	assert(server.started(), `Can only get services after Comet has started.`)
 	assert(service, `Service "{serviceName}" was not found!`)
 
 	return service
