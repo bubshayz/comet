@@ -114,8 +114,8 @@ function client.start()
 			warn(tostring(response))
 		end
 
-		startupServices()
 		script:SetAttribute(sharedEnums.Attribute.started, true)
+		startupServices()
 		resolve(os.clock() - clockStampBeforeStart)
 	end)
 end

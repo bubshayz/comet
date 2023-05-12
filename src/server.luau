@@ -108,8 +108,8 @@ function server.start()
 			warn(tostring(response))
 		end
 
-		startupServices()
 		script:SetAttribute(sharedEnums.Attribute.started, true)
+		startupServices()
 		resolve(os.clock() - beforeStartClockStamp)
 	end)
 end
